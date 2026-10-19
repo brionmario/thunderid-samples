@@ -34,6 +34,15 @@ jobs:
         with:
           fail-on-severity: high
           deny-licenses: GPL-3.0-only,GPL-3.0-or-later,AGPL-3.0-only,AGPL-3.0-or-later
+          # No patched release exists for either advisory, and both are reached only through nuxt's
+          # build and dev tooling in quickstarts/nuxt, which ignores them for `pnpm audit` too (see its
+          # pnpm-workspace.yaml for the full justification). Drop each once upstream ships a fix.
+          #   GHSA-vfj7-8cjw-p6xm: braces stack-exhaustion DoS on the project's own glob patterns.
+          #   GHSA-86w9-cpqp-85rv: node-forge signature verification; only used for local dev certs.
+          allow-ghsas: GHSA-vfj7-8cjw-p6xm, GHSA-86w9-cpqp-85rv
+          # ThunderID's own Apache-2.0 package, which the dependency graph reports with the non-SPDX
+          # lowercase id `apache-2.0`, failing the license validity check.
+          allow-dependencies-licenses: pkg:pub/thunderid_flutter
           comment-summary-in-pr: always
           base-ref: ${{ github.event.pull_request.base.sha }}
           head-ref: ${{ github.event.pull_request.head.sha }}
@@ -43,30 +52,40 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      samples: ${{ steps.find.outputs.samples }}
+      node: ${{ steps.find.outputs.node }}
+      flutter: ${{ steps.find.outputs.flutter }}
+      android: ${{ steps.find.outputs.android }}
+      ios: ${{ steps.find.outputs.ios }}
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      # Every <category>/<sample>/ directory at the repo root with a package.json is a sample.
+      # Every <category>/<sample>/ directory at the repo root is a sample. Its stack is picked from
+      # the manifest at its root: package.json (Node.js), pubspec.yaml (Flutter),
+      # settings.gradle.kts (Android) or Package.swift (iOS).
       - name: 🔍 Find Samples
         id: find
         run: |
-          samples=$(find . -mindepth 3 -maxdepth 3 -name package.json -not -path "./.*" -not -path "*/node_modules/*" \
-            -exec dirname {} \; 2>/dev/null | sed 's#^\./##' | sort | jq -R . | jq -cs .)
-          echo "samples=$samples" >> "$GITHUB_OUTPUT"
-          echo "Samples: $samples"
+          find_samples() {
+            find . -mindepth 3 -maxdepth 3 -name "$1" -not -path "./.*" -not -path "*/node_modules/*" \
+              -exec dirname {} \; 2>/dev/null | sed 's#^\./##' | sort | jq -R . | jq -cs .
+          }
+          for stack in node:package.json flutter:pubspec.yaml android:settings.gradle.kts ios:Package.swift; do
+            samples=$(find_samples "${stack#*:}")
+            echo "${stack%%:*}=$samples" >> "$GITHUB_OUTPUT"
+            echo "${stack%%:*} samples: $samples"
+          done
 
   build-lint:
     name: 🔨 Build & Lint (${{ matrix.sample }})
     needs: discover
-    if: ${{ needs.discover.outputs.samples != '[]' }}
+    if: ${{ needs.discover.outputs.node != '[]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        sample: ${{ fromJson(needs.discover.outputs.samples) }}
+        sample: ${{ fromJson(needs.discover.outputs.node) }}
     defaults:
       run:
         working-directory: ${{ matrix.sample }}
@@ -99,11 +118,119 @@ jobs:
       - name: 🔍 Security Audit
         run: pnpm audit --audit-level=high
 
+      # Not every sample has a formatter, a linter or a build step (e.g. the Node.js
+      # server quickstarts run their sources directly), so each runs only where defined.
       - name: 🎨 Check Formatting
-        run: pnpm format:check
+        run: pnpm run --if-present format:check
 
       - name: 🧹 Lint
-        run: pnpm lint
+        run: pnpm run --if-present lint
 
       - name: 🔨 Build
-        run: pnpm build
+        run: pnpm run --if-present build
+
+  build-flutter:
+    name: 🦋 Analyze & Build (${{ matrix.sample }})
+    needs: discover
+    if: ${{ needs.discover.outputs.flutter != '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        sample: ${{ fromJson(needs.discover.outputs.flutter) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.sample }}
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: ☕ Set up JDK
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🐦 Set up Flutter
+        uses: subosito/flutter-action@4cab68ce0f1c7c924f688bff4792e044f1aeb30c # v2
+        with:
+          channel: stable
+          cache: true
+
+      # Samples that bundle a .env as an asset need the file present to build.
+      - name: 🔐 Create .env
+        run: if [ -f .env.example ] && [ ! -f .env ]; then cp .env.example .env; fi
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🔍 Analyze
+        run: flutter analyze
+
+      - name: 🔨 Build Android APK
+        run: flutter build apk --debug
+
+  build-android:
+    name: 🤖 Build (${{ matrix.sample }})
+    needs: discover
+    if: ${{ needs.discover.outputs.android != '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        sample: ${{ fromJson(needs.discover.outputs.android) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.sample }}
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: ☕ Set up JDK
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🗄️ Cache Gradle
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ matrix.sample }}-${{ hashFiles(format('{0}/**/*.gradle.kts', matrix.sample), format('{0}/**/gradle-wrapper.properties', matrix.sample)) }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ matrix.sample }}-
+
+      - name: 🔨 Build Debug APK
+        run: ./gradlew assembleDebug
+
+  build-ios:
+    name: 🍎 Build (${{ matrix.sample }})
+    needs: discover
+    if: ${{ needs.discover.outputs.ios != '[]' }}
+    runs-on: macos-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        sample: ${{ fromJson(needs.discover.outputs.ios) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.sample }}
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: 🗄️ Cache Swift Packages
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: ${{ matrix.sample }}/.build
+          key: ${{ runner.os }}-swift-${{ matrix.sample }}-${{ hashFiles(format('{0}/Package.resolved', matrix.sample)) }}
+          restore-keys: |
+            ${{ runner.os }}-swift-${{ matrix.sample }}-
+
+      - name: 🔨 Build
+        run: swift build

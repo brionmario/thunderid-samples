@@ -1,0 +1,42 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Local build config (copy config.properties.example and fill in your values)
+config.properties
+
+# Local Digital Asset Links file (copy assetlinks.json.example, fill in your values, and
+# host it at https://<your-domain>/.well-known/assetlinks.json — not served from this app)
+assetlinks.json
+
+# Log/OS Files
+*.log
+.DS_Store
+
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.aab
+*.apk
+output-metadata.json
+
+# IntelliJ
+*.iml
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Android Profiling
+*.hprof

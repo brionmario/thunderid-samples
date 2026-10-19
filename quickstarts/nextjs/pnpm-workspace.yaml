@@ -1,0 +1,10 @@
+allowBuilds:
+  core-js: false
+
+overrides:
+  # JUSTIFICATION: Fixes GHSA-6g55-p6wh-862q / GHSA-r28c-9q8g-f849 / GHSA-fxqj-rqcc-2cmp (arbitrary
+  # file read via attacker-controlled `sourceMappingURL`) and GHSA-qx2v-qp2m-jg93 (XSS via unescaped
+  # `</style>` in stringify output). Transitive via `@thunderid/nextjs` > `next`, which still bundles
+  # `postcss@8.4.31` internally even on the latest 15.5.x release. Keep the override until Next.js
+  # bumps its own postcss pin (https://github.com/vercel/next.js).
+  postcss: 8.5.23

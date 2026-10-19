@@ -1,7 +1,7 @@
 # Entrypoint workflow for releasing sample apps.
 # Each selected sample is released independently: its version is bumped in its
-# native manifest (package.json, pubspec.yaml, ...), committed, tagged, packed
-# into a source zip and attached to a GitHub Release.
+# native manifest (package.json, pubspec.yaml, build.gradle.kts, project.pbxproj),
+# committed, tagged, packed into a source zip and attached to a GitHub Release.
 # Sample jobs run concurrently; push conflicts are handled by a retry-with-rebase
 # loop in the commit step.
 
@@ -22,6 +22,66 @@ on:
 
       confirm_major:
         description: 'Check to confirm intentional major bump (required when bump_type is major)'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_android:
+        description: 'quickstarts/android'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_browser:
+        description: 'quickstarts/browser'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_express:
+        description: 'quickstarts/express'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_flutter:
+        description: 'quickstarts/flutter'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_ios:
+        description: 'quickstarts/ios'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_nextjs:
+        description: 'quickstarts/nextjs'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_node:
+        description: 'quickstarts/node'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_nuxt:
+        description: 'quickstarts/nuxt'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_react:
+        description: 'quickstarts/react'
+        required: false
+        type: boolean
+        default: false
+
+      sample_quickstarts_vue:
+        description: 'quickstarts/vue'
         required: false
         type: boolean
         default: false
@@ -49,6 +109,8 @@ jobs:
   validate:
     name: ✅ Validate Inputs
     runs-on: ubuntu-latest
+    outputs:
+      samples: ${{ steps.plan.outputs.samples }}
     steps:
       - name: Guard against accidental major bump
         if: github.event.inputs.bump_type == 'major' && github.event.inputs.confirm_major != 'true'
@@ -56,12 +118,58 @@ jobs:
           echo "❌ bump_type is 'major' but confirm_major is not checked. Enable confirm_major to proceed."
           exit 1
 
-  # ── Integrations ───────────────────────────────────────────────────────────
-  release-flutter-app-auth:
-    name: 🦋 Release integrations/flutter-app-auth
+      # Turns the checked sample_* inputs into the release matrix.
+      - name: 📋 Plan Releases
+        id: plan
+        env:
+          sample_quickstarts_android: ${{ github.event.inputs.sample_quickstarts_android }}
+          sample_quickstarts_browser: ${{ github.event.inputs.sample_quickstarts_browser }}
+          sample_quickstarts_express: ${{ github.event.inputs.sample_quickstarts_express }}
+          sample_quickstarts_flutter: ${{ github.event.inputs.sample_quickstarts_flutter }}
+          sample_quickstarts_ios: ${{ github.event.inputs.sample_quickstarts_ios }}
+          sample_quickstarts_nextjs: ${{ github.event.inputs.sample_quickstarts_nextjs }}
+          sample_quickstarts_node: ${{ github.event.inputs.sample_quickstarts_node }}
+          sample_quickstarts_nuxt: ${{ github.event.inputs.sample_quickstarts_nuxt }}
+          sample_quickstarts_react: ${{ github.event.inputs.sample_quickstarts_react }}
+          sample_quickstarts_vue: ${{ github.event.inputs.sample_quickstarts_vue }}
+          sample_flutter_app_auth: ${{ github.event.inputs.sample_flutter_app_auth }}
+          sample_self_care_account: ${{ github.event.inputs.sample_self_care_account }}
+        run: |
+          samples='[]'
+          add() {
+            if [ "${!1}" = "true" ]; then
+              samples=$(jq -c --argjson s "$2" '. + [$s]' <<< "$samples")
+            fi
+          }
+          add sample_quickstarts_android '{"path":"quickstarts/android","emoji":"🤖","title":"ThunderID Android Quickstart Sample"}'
+          add sample_quickstarts_browser '{"path":"quickstarts/browser","emoji":"🌐","title":"ThunderID Browser Quickstart Sample"}'
+          add sample_quickstarts_express '{"path":"quickstarts/express","emoji":"🚂","title":"ThunderID Express Quickstart Sample"}'
+          add sample_quickstarts_flutter '{"path":"quickstarts/flutter","emoji":"🦋","title":"ThunderID Flutter Quickstart Sample"}'
+          add sample_quickstarts_ios '{"path":"quickstarts/ios","emoji":"🍎","title":"ThunderID iOS Quickstart Sample"}'
+          add sample_quickstarts_nextjs '{"path":"quickstarts/nextjs","emoji":"▲","title":"ThunderID Next.js Quickstart Sample"}'
+          add sample_quickstarts_node '{"path":"quickstarts/node","emoji":"🟢","title":"ThunderID Node.js Quickstart Sample"}'
+          add sample_quickstarts_nuxt '{"path":"quickstarts/nuxt","emoji":"💚","title":"ThunderID Nuxt Quickstart Sample"}'
+          add sample_quickstarts_react '{"path":"quickstarts/react","emoji":"⚛️","title":"ThunderID React Quickstart Sample"}'
+          add sample_quickstarts_vue '{"path":"quickstarts/vue","emoji":"🟩","title":"ThunderID Vue Quickstart Sample"}'
+          add sample_flutter_app_auth '{"path":"integrations/flutter-app-auth","emoji":"🦋","title":"ThunderID Flutter AppAuth Sample"}'
+          add sample_self_care_account '{"path":"self-care/account","emoji":"👤","title":"ThunderID Self-Care Account Sample"}'
+          if [ "$samples" = "[]" ]; then
+            echo "❌ No sample selected. Check at least one sample_* input."
+            exit 1
+          fi
+          echo "samples=$samples" >> "$GITHUB_OUTPUT"
+          echo "Releasing: $samples"
+
+  release:
+    name: ${{ matrix.sample.emoji }} Release ${{ matrix.sample.path }}
     needs: [validate]
-    if: needs.validate.result == 'success' && github.event.inputs.sample_flutter_app_auth == 'true'
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sample: ${{ fromJson(needs.validate.outputs.samples) }}
+    env:
+      SAMPLE_PATH: ${{ matrix.sample.path }}
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -72,86 +180,40 @@ jobs:
         id: bump
         uses: ./.github/actions/bump-version
         with:
-          path: integrations/flutter-app-auth
+          path: ${{ matrix.sample.path }}
           bump_type: ${{ github.event.inputs.bump_type }}
 
       - name: 📤 Commit, Tag & Push
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
         run: |
           git config user.name "${{ env.RELEASE_GIT_USER_NAME }}"
           git config user.email "${{ env.RELEASE_GIT_USER_EMAIL }}"
           git add "${{ steps.bump.outputs.manifest }}"
-          git diff --cached --quiet || git commit -m "[Release] integrations/flutter-app-auth@${{ steps.bump.outputs.version }}"
+          git diff --cached --quiet || git commit -m "[Release] ${SAMPLE_PATH}@${VERSION}"
           for i in $(seq 1 5); do
             git pull --rebase origin ${{ github.ref_name }}
             git push origin HEAD:${{ github.ref_name }} && break
             [ "$i" -eq 5 ] && exit 1
             sleep $((i * 3))
           done
-          git tag "sample/integrations/flutter-app-auth/v${{ steps.bump.outputs.version }}"
-          git push origin "sample/integrations/flutter-app-auth/v${{ steps.bump.outputs.version }}"
+          git tag "sample/${SAMPLE_PATH}/v${VERSION}"
+          git push origin "sample/${SAMPLE_PATH}/v${VERSION}"
 
       - name: 📦 Pack Sample
         id: pack
         uses: ./.github/actions/pack-sample
         with:
-          path: integrations/flutter-app-auth
+          path: ${{ matrix.sample.path }}
           version: ${{ steps.bump.outputs.version }}
 
       - name: 🚀 Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.THUNDERID_AUTOMATION_BOT }}
+          VERSION: ${{ steps.bump.outputs.version }}
+          TITLE: ${{ matrix.sample.title }}
         run: |
-          gh release create "sample/integrations/flutter-app-auth/v${{ steps.bump.outputs.version }}" \
-            --title "ThunderID Flutter AppAuth Sample v${{ steps.bump.outputs.version }}" \
-            --generate-notes \
-            "${{ steps.pack.outputs.archive }}"
-
-  # ── Self-Care ──────────────────────────────────────────────────────────────
-  release-self-care-account:
-    name: 👤 Release self-care/account
-    needs: [validate]
-    if: needs.validate.result == 'success' && github.event.inputs.sample_self_care_account == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-        with:
-          token: ${{ secrets.THUNDERID_AUTOMATION_BOT }}
-
-      - name: 🏷️ Bump Version
-        id: bump
-        uses: ./.github/actions/bump-version
-        with:
-          path: self-care/account
-          bump_type: ${{ github.event.inputs.bump_type }}
-
-      - name: 📤 Commit, Tag & Push
-        run: |
-          git config user.name "${{ env.RELEASE_GIT_USER_NAME }}"
-          git config user.email "${{ env.RELEASE_GIT_USER_EMAIL }}"
-          git add "${{ steps.bump.outputs.manifest }}"
-          git diff --cached --quiet || git commit -m "[Release] self-care/account@${{ steps.bump.outputs.version }}"
-          for i in $(seq 1 5); do
-            git pull --rebase origin ${{ github.ref_name }}
-            git push origin HEAD:${{ github.ref_name }} && break
-            [ "$i" -eq 5 ] && exit 1
-            sleep $((i * 3))
-          done
-          git tag "sample/self-care/account/v${{ steps.bump.outputs.version }}"
-          git push origin "sample/self-care/account/v${{ steps.bump.outputs.version }}"
-
-      - name: 📦 Pack Sample
-        id: pack
-        uses: ./.github/actions/pack-sample
-        with:
-          path: self-care/account
-          version: ${{ steps.bump.outputs.version }}
-
-      - name: 🚀 Create GitHub Release
-        env:
-          GH_TOKEN: ${{ secrets.THUNDERID_AUTOMATION_BOT }}
-        run: |
-          gh release create "sample/self-care/account/v${{ steps.bump.outputs.version }}" \
-            --title "ThunderID Self-Care Account Sample v${{ steps.bump.outputs.version }}" \
+          gh release create "sample/${SAMPLE_PATH}/v${VERSION}" \
+            --title "${TITLE} v${VERSION}" \
             --generate-notes \
             "${{ steps.pack.outputs.archive }}"
