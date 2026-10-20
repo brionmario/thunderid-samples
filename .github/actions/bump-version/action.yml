@@ -2,7 +2,8 @@ name: Bump Sample Version
 description: >
   Bumps the version of a sample app in its native version manifest, so samples
   built on different stacks can share one release flow. Supported manifests
-  (checked in order): package.json (npm/pnpm/yarn) and pubspec.yaml (Flutter/Dart).
+  (checked in order): package.json (npm/pnpm/yarn), pubspec.yaml (Flutter/Dart),
+  build.gradle.kts (Android) and *.xcodeproj/project.pbxproj (iOS).
 
 inputs:
   path:
@@ -72,8 +73,37 @@ runs:
           fi
           sed -i -E "s/^version:[[:space:]]*[^[:space:]#]+/version: ${VERSION}+${BUILD}/" "${MANIFEST}"
 
+        elif [ -f "${SAMPLE_PATH}/build.gradle.kts" ] && grep -q 'versionName = "' "${SAMPLE_PATH}/build.gradle.kts"; then
+          MANIFEST="${SAMPLE_PATH}/build.gradle.kts"
+          CURRENT=$(sed -n -E 's/^[[:space:]]*versionName = "([^"]+)".*/\1/p' "${MANIFEST}" | head -1)
+          CODE=$(sed -n -E 's/^[[:space:]]*versionCode = ([0-9]+).*/\1/p' "${MANIFEST}" | head -1)
+          if [ -z "${CURRENT}" ] || [ -z "${CODE}" ]; then
+            echo "Error: no 'versionName'/'versionCode' found in ${MANIFEST}"
+            exit 1
+          fi
+
+          VERSION=$(bump_semver "${CURRENT}")
+          # versionCode must increase monotonically for Android to accept the upgrade.
+          sed -i -E "s/^([[:space:]]*versionName = )\"[^\"]+\"/\1\"${VERSION}\"/" "${MANIFEST}"
+          sed -i -E "s/^([[:space:]]*versionCode = )[0-9]+/\1$((CODE + 1))/" "${MANIFEST}"
+
+        elif PBXPROJ=$(ls "${SAMPLE_PATH}"/*.xcodeproj/project.pbxproj 2>/dev/null | head -1) && [ -n "${PBXPROJ}" ]; then
+          MANIFEST="${PBXPROJ}"
+          CURRENT=$(sed -n -E 's/^[[:space:]]*MARKETING_VERSION = ([^;]+);.*/\1/p' "${MANIFEST}" | head -1)
+          BUILD=$(sed -n -E 's/^[[:space:]]*CURRENT_PROJECT_VERSION = ([0-9]+);.*/\1/p' "${MANIFEST}" | head -1)
+          if [ -z "${CURRENT}" ] || [ -z "${BUILD}" ]; then
+            echo "Error: no 'MARKETING_VERSION'/'CURRENT_PROJECT_VERSION' found in ${MANIFEST}"
+            exit 1
+          fi
+
+          VERSION=$(bump_semver "${CURRENT}")
+          # Every build configuration carries its own copy, so rewrite all of them. The build
+          # number (CFBundleVersion) must increase monotonically, like the Flutter +N above.
+          sed -i -E "s/^([[:space:]]*MARKETING_VERSION = )[^;]+;/\1${VERSION};/" "${MANIFEST}"
+          sed -i -E "s/^([[:space:]]*CURRENT_PROJECT_VERSION = )[0-9]+;/\1$((BUILD + 1));/" "${MANIFEST}"
+
         else
-          echo "Error: no supported version manifest (package.json, pubspec.yaml) found in ${SAMPLE_PATH}"
+          echo "Error: no supported version manifest (package.json, pubspec.yaml, build.gradle.kts, project.pbxproj) found in ${SAMPLE_PATH}"
           exit 1
         fi
 
