@@ -2,7 +2,7 @@
 # Each selected sample is released independently: its version is bumped in its
 # native manifest (package.json, pubspec.yaml, build.gradle.kts, project.pbxproj),
 # committed, tagged, packed into a source zip and attached to a GitHub Release.
-# Sample jobs run concurrently; push conflicts are handled by a retry-with-rebase
+# Sample jobs run up to four at a time; push conflicts are handled by a retry-with-rebase
 # loop in the commit step.
 
 name: 🚀 Release
@@ -86,6 +86,12 @@ on:
         type: boolean
         default: false
 
+      sample_better_auth_nextjs:
+        description: 'integrations/better-auth-nextjs'
+        required: false
+        type: boolean
+        default: false
+
       sample_flutter_app_auth:
         description: 'integrations/flutter-app-auth'
         required: false
@@ -132,6 +138,7 @@ jobs:
           sample_quickstarts_nuxt: ${{ github.event.inputs.sample_quickstarts_nuxt }}
           sample_quickstarts_react: ${{ github.event.inputs.sample_quickstarts_react }}
           sample_quickstarts_vue: ${{ github.event.inputs.sample_quickstarts_vue }}
+          sample_better_auth_nextjs: ${{ github.event.inputs.sample_better_auth_nextjs }}
           sample_flutter_app_auth: ${{ github.event.inputs.sample_flutter_app_auth }}
           sample_self_care_account: ${{ github.event.inputs.sample_self_care_account }}
         run: |
@@ -151,6 +158,7 @@ jobs:
           add sample_quickstarts_nuxt '{"path":"quickstarts/nuxt","emoji":"💚","title":"ThunderID Nuxt Quickstart Sample"}'
           add sample_quickstarts_react '{"path":"quickstarts/react","emoji":"⚛️","title":"ThunderID React Quickstart Sample"}'
           add sample_quickstarts_vue '{"path":"quickstarts/vue","emoji":"🟩","title":"ThunderID Vue Quickstart Sample"}'
+          add sample_better_auth_nextjs '{"path":"integrations/better-auth-nextjs","emoji":"🔐","title":"ThunderID Better Auth Next.js Sample"}'
           add sample_flutter_app_auth '{"path":"integrations/flutter-app-auth","emoji":"🦋","title":"ThunderID Flutter AppAuth Sample"}'
           add sample_self_care_account '{"path":"self-care/account","emoji":"👤","title":"ThunderID Self-Care Account Sample"}'
           if [ "$samples" = "[]" ]; then
@@ -166,6 +174,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # Each release pushes to the same branch; a few at a time keeps those pushes from piling up.
+      max-parallel: 4
       matrix:
         sample: ${{ fromJson(needs.validate.outputs.samples) }}
     env:
@@ -191,11 +201,14 @@ jobs:
           git config user.email "${{ env.RELEASE_GIT_USER_EMAIL }}"
           git add "${{ steps.bump.outputs.manifest }}"
           git diff --cached --quiet || git commit -m "[Release] ${SAMPLE_PATH}@${VERSION}"
-          for i in $(seq 1 5); do
+          # Every selected sample pushes its own commit to the same branch at about the same time.
+          # A random wait between attempts stops the jobs that lost a race from retrying in step
+          # with each other, which a fixed backoff does not.
+          for i in $(seq 1 10); do
             git pull --rebase origin ${{ github.ref_name }}
             git push origin HEAD:${{ github.ref_name }} && break
-            [ "$i" -eq 5 ] && exit 1
-            sleep $((i * 3))
+            [ "$i" -eq 10 ] && exit 1
+            sleep $((i + RANDOM % 10))
           done
           git tag "sample/${SAMPLE_PATH}/v${VERSION}"
           git push origin "sample/${SAMPLE_PATH}/v${VERSION}"
