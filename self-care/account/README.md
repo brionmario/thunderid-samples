@@ -1,3 +1,5 @@
+![ThunderID Account Sample](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/self-care-account.png)
+
 # ThunderID Account
 
 ThunderID Account is where users manage their own ThunderID account. Signed-in users can view and edit their profile and

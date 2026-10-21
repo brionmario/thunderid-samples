@@ -1,3 +1,5 @@
+![ThunderID Better Auth Sample](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/integrations-better-auth-nextjs.png)
+
 # Better Auth + ThunderID Sample
 
 <a href="https://stackblitz.com/fork/github/thunder-id/samples/tree/main/integrations/better-auth-nextjs?file=.env" target="_blank"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" /></a>

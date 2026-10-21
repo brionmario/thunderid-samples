@@ -1,3 +1,5 @@
+![ThunderID Manage Sample](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/b2b-manage.png)
+
 # ThunderID Manage
 
 ThunderID Manage is a sample app for trying out the ThunderID React SDK on B2B management services. An administrator signs in and manages the resources of a ThunderID server from one place. It is a React (Vite + TypeScript) app built with the [ThunderID React SDK](https://www.npmjs.com/package/@thunderid/react).

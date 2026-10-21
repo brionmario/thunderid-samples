@@ -1,3 +1,5 @@
+![ThunderID Flutter Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-flutter.png)
+
 # ThunderID Flutter Quickstart
 
 ThunderID Flutter Quickstart demonstrates the full authentication lifecycle using the [`thunderid_flutter`](https://pub.dev/packages/thunderid_flutter) SDK on iOS and Android.

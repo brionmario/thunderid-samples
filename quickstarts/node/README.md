@@ -1,6 +1,6 @@
-# ThunderID Node.js Service Quickstart
+![ThunderID Node.js Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-node.png)
 
-<a href="https://stackblitz.com/fork/github/thunder-id/samples/tree/main/quickstarts/node?file=.env" target="_blank"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" /></a>
+# ThunderID Node.js Service Quickstart
 
 A minimal machine-to-machine (service-to-service) client, using the ThunderID Node.js SDK
 (`@thunderid/node`). Unlike the other quickstarts, there's no user and no browser sign-in: this

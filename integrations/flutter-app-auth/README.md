@@ -1,3 +1,5 @@
+![ThunderID Flutter AppAuth Sample](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/integrations-flutter-app-auth.png)
+
 # ThunderID Flutter AppAuth Sample
 
 A minimal Flutter app that signs users in to ThunderID with [flutter_appauth](https://pub.dev/packages/flutter_appauth), a third-party OpenID Connect plugin that wraps AppAuth for iOS and Android. It uses the authorization code flow with PKCE in the system browser, refreshes tokens, and signs out through ThunderID's end session endpoint.

@@ -1,3 +1,5 @@
+![ThunderID iOS Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-ios.png)
+
 # ThunderID iOS Quickstart
 
 ThunderID iOS Quickstart demonstrates the full authentication lifecycle using the `ThunderID iOS` SDK.

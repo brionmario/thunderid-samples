@@ -1,0 +1,57 @@
+{
+  "react": {
+    "file": "react.svg",
+    "boxStyle": "background:linear-gradient(145deg,#08161e,#0c1e30);box-shadow:0 0 32px rgba(97,218,251,0.2),inset 0 1px 0 rgba(255,255,255,0.07);",
+    "source": "repo-banners (official React mark)"
+  },
+  "vue": {
+    "file": "vue.svg",
+    "boxStyle": "background:linear-gradient(145deg,#0b1e14,#0f2618);box-shadow:0 0 32px rgba(66,184,131,0.2),inset 0 1px 0 rgba(255,255,255,0.07);",
+    "source": "repo-banners (official Vue mark)"
+  },
+  "nextjs": {
+    "file": "nextjs.svg",
+    "boxStyle": "background:#000;box-shadow:0 0 32px rgba(255,255,255,0.1),inset 0 1px 0 rgba(255,255,255,0.12);",
+    "source": "repo-banners (official Next.js mark)"
+  },
+  "nuxt": {
+    "file": "nuxt.svg",
+    "boxStyle": "background:linear-gradient(145deg,#001508,#011d0b);box-shadow:0 0 32px rgba(0,220,130,0.2),inset 0 1px 0 rgba(255,255,255,0.07);",
+    "source": "repo-banners (official Nuxt mark)"
+  },
+  "browser": {
+    "file": "browser.svg",
+    "boxStyle": "background:linear-gradient(145deg,#0e1e44,#162860);box-shadow:0 0 32px rgba(66,133,244,0.3),inset 0 1px 0 rgba(255,255,255,0.1);",
+    "source": "repo-banners (Chrome mark, as used on the @thunderid/browser banner)"
+  },
+  "express": {
+    "file": "express.svg",
+    "boxStyle": "background:linear-gradient(145deg,#111,#1a1a1a);box-shadow:0 0 32px rgba(255,255,255,0.06),inset 0 1px 0 rgba(255,255,255,0.1);",
+    "source": "repo-banners (official Express wordmark)"
+  },
+  "node": {
+    "file": "node.svg",
+    "boxStyle": "background:linear-gradient(145deg,#0c1c0c,#112014);box-shadow:0 0 32px rgba(95,160,78,0.22),inset 0 1px 0 rgba(255,255,255,0.07);",
+    "source": "repo-banners (official Node.js mark)"
+  },
+  "ios": {
+    "file": "ios.svg",
+    "boxStyle": "background:#f5f5f7;box-shadow:0 0 32px rgba(245,245,247,0.18),inset 0 1px 0 rgba(255,255,255,0.9);",
+    "source": "Simple Icons 15.22.0 `apple` (CC0): https://cdn.jsdelivr.net/npm/simple-icons@15.22.0/icons/apple.svg"
+  },
+  "android": {
+    "file": "android.svg",
+    "boxStyle": "background:linear-gradient(145deg,#091a0c,#0d2411);box-shadow:0 0 32px rgba(61,220,132,0.22),inset 0 1px 0 rgba(255,255,255,0.07);",
+    "source": "repo-banners (Android 2019 stacked logo, Wikipedia)"
+  },
+  "flutter": {
+    "file": "flutter.svg",
+    "boxStyle": "background:linear-gradient(145deg,#041218,#061a24);box-shadow:0 0 32px rgba(84,197,248,0.25),inset 0 1.5px 0 rgba(255,255,255,0.08);",
+    "source": "repo-banners (Flutter logo, Wikipedia)"
+  },
+  "better-auth": {
+    "file": "better-auth.svg",
+    "boxStyle": "background:linear-gradient(145deg,#0a0a0a,#181818);box-shadow:0 0 32px rgba(255,255,255,0.08),inset 0 1px 0 rgba(255,255,255,0.1);",
+    "source": "repo-banners (official Better Auth mark)"
+  }
+}
