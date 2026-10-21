@@ -34,6 +34,23 @@ on a pull request.
   `Package.swift`) at the sample root. The pull request builder finds samples by that file
   at exactly `<area>/<sample>/`.
 
+## Package manager
+
+JavaScript samples use npm, so that a developer who copies one out needs nothing beyond Node.js.
+
+- Commit `package-lock.json`. Do not add a `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `yarn.lock`,
+  or a `packageManager` field.
+- Write npm commands in READMEs and in-app hints: `npm install`, `npm run dev`, `npm start`.
+- Use the npm equivalents of pnpm settings: `overrides` in `package.json` for a pinned transitive
+  version, and `allowScripts` (written with `npm approve-scripts` and `npm deny-scripts`) for
+  install scripts.
+- npm audit has no ignore list. An advisory that has no fix and is accepted goes in
+  `AUDIT_ALLOWED_GHSAS` in `.github/workflows/pr-builder.yml`, with its justification.
+
+If the developer asks for pnpm or yarn, say that samples default to npm and why. If they still
+want it, use it, and point out that CI installs every sample with `npm ci`, so the pull request
+builder needs a matching change.
+
 ## Rules
 
 - Always write `ThunderID`. Never use a bare `thunder`, `Thunder`, or `THUNDER` as a short

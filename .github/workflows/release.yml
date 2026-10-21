@@ -200,6 +200,8 @@ jobs:
           git config user.name "${{ env.RELEASE_GIT_USER_NAME }}"
           git config user.email "${{ env.RELEASE_GIT_USER_EMAIL }}"
           git add "${{ steps.bump.outputs.manifest }}"
+          # `npm version` also bumps the version recorded in package-lock.json.
+          if [ -f "${SAMPLE_PATH}/package-lock.json" ]; then git add "${SAMPLE_PATH}/package-lock.json"; fi
           git diff --cached --quiet || git commit -m "[Release] ${SAMPLE_PATH}@${VERSION}"
           # Every selected sample pushes its own commit to the same branch at about the same time.
           # A random wait between attempts stops the jobs that lost a race from retrying in step

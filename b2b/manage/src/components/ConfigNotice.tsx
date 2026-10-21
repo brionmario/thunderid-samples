@@ -81,7 +81,7 @@ export default function ConfigNotice({missing}: ConfigNoticeProps): ReactElement
 
             <p className="config-hint">
               Copy <code>.env.example</code> to <code>.env</code>, fill in the values from your ThunderID application,
-              then run <code>pnpm dev</code> again.
+              then run <code>npm run dev</code> again.
             </p>
           </div>
 

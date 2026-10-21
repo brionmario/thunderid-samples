@@ -34,8 +34,8 @@ Protected routes validate the `Authorization: Bearer <token>` header against Thu
 
 3. Install dependencies and start the server:
    ```sh
-   pnpm install
-   pnpm start
+   npm install
+   npm start
    ```
 
 Open [http://localhost:3000](http://localhost:3000) for the API documentation page.

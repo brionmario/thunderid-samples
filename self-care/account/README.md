@@ -16,7 +16,7 @@ The top nav uses `SignInButton`, `UserDropdown` and `SignedIn`/`SignedOut`.
 
 ## Prerequisites
 
-- Node.js 20+ and [pnpm](https://pnpm.io/)
+- Node.js 20+ and npm
 - A running ThunderID server (defaults to `https://localhost:8090`)
 
 New to ThunderID with React? Follow the
@@ -44,8 +44,8 @@ ThunderID server and connect a React app to it.
 3. Install and start:
 
    ```bash
-   pnpm install
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
 4. Open `http://localhost:5173` and sign in. You land on the account page.

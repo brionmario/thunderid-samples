@@ -7,7 +7,6 @@ A minimal Vue 3 + Vite application demonstrating ThunderID authentication with O
 ## Prerequisites
 
 - Node.js 18+
-- pnpm
 - A ThunderID application
 
 ## Setup
@@ -25,8 +24,8 @@ A minimal Vue 3 + Vite application demonstrating ThunderID authentication with O
 
 3. Install dependencies and start the dev server:
    ```sh
-   pnpm install
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
 The app will be available at `http://localhost:5173`.

@@ -15,6 +15,17 @@ permissions:
 
 env:
   NODE_VERSION: "lts/*"
+  # Advisories that Dependency Review and the npm audit step both accept. No patched release
+  # exists for either, and both are reached only through nuxt's build and dev tooling in
+  # quickstarts/nuxt. Drop each once upstream ships a fix.
+  #   GHSA-vfj7-8cjw-p6xm: braces stack-exhaustion DoS. Transitive via `nitropack` > `globby` >
+  #     `fast-glob` > `micromatch` > `braces`, which only expands glob patterns taken from the
+  #     project's own config and filesystem at build time.
+  #   GHSA-86w9-cpqp-85rv: node-forge accepts extra nested DigestAlgorithm elements during RSA
+  #     signature verification. Transitive via `nitropack` > `listhen` > `node-forge`, which only
+  #     generates keys and self-signed certificates for the local HTTPS dev server and never
+  #     verifies signatures.
+  AUDIT_ALLOWED_GHSAS: GHSA-vfj7-8cjw-p6xm, GHSA-86w9-cpqp-85rv
 
 jobs:
   dependency-review:
@@ -34,12 +45,7 @@ jobs:
         with:
           fail-on-severity: high
           deny-licenses: GPL-3.0-only,GPL-3.0-or-later,AGPL-3.0-only,AGPL-3.0-or-later
-          # No patched release exists for either advisory, and both are reached only through nuxt's
-          # build and dev tooling in quickstarts/nuxt, which ignores them for `pnpm audit` too (see its
-          # pnpm-workspace.yaml for the full justification). Drop each once upstream ships a fix.
-          #   GHSA-vfj7-8cjw-p6xm: braces stack-exhaustion DoS on the project's own glob patterns.
-          #   GHSA-86w9-cpqp-85rv: node-forge signature verification; only used for local dev certs.
-          allow-ghsas: GHSA-vfj7-8cjw-p6xm, GHSA-86w9-cpqp-85rv
+          allow-ghsas: ${{ env.AUDIT_ALLOWED_GHSAS }}
           # ThunderID's own Apache-2.0 package, which the dependency graph reports with the non-SPDX
           # lowercase id `apache-2.0`, failing the license validity check.
           allow-dependencies-licenses: pkg:pub/thunderid_flutter
@@ -97,37 +103,42 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-
-      - name: 📦 Set up pnpm
-        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
-        with:
-          version: latest
-          run_install: false
-
-      - name: 🗄️ Cache pnpm store
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
-        with:
-          path: ~/.local/share/pnpm/store
-          key: ${{ runner.os }}-pnpm-${{ matrix.sample }}-${{ hashFiles(format('{0}/pnpm-lock.yaml', matrix.sample)) }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-${{ matrix.sample }}-
+          cache: npm
+          cache-dependency-path: ${{ matrix.sample }}/package-lock.json
 
       - name: 📦 Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci --no-audit --no-fund
 
+      # npm audit has no ignore list, so high and critical advisories are checked here against
+      # AUDIT_ALLOWED_GHSAS.
       - name: 🔍 Security Audit
-        run: pnpm audit --audit-level=high
+        run: |
+          npm audit --json > "${RUNNER_TEMP}/audit.json" || true
+          node -e '
+            const allowed = new Set(process.env.AUDIT_ALLOWED_GHSAS.split(",").map(s => s.trim()));
+            const {vulnerabilities = {}} = require(process.argv[1]);
+            const blocking = new Map();
+            for (const [name, v] of Object.entries(vulnerabilities)) {
+              for (const via of v.via) {
+                if (typeof via !== "object" || !["high", "critical"].includes(via.severity)) continue;
+                const id = via.url.split("/").pop();
+                if (!allowed.has(id)) blocking.set(id, `${via.severity} ${id} in ${name}: ${via.title}`);
+              }
+            }
+            for (const line of blocking.values()) console.error(line);
+            process.exit(blocking.size ? 1 : 0);
+          ' "${RUNNER_TEMP}/audit.json"
 
       # Not every sample has a formatter, a linter or a build step (e.g. the Node.js
       # server quickstarts run their sources directly), so each runs only where defined.
       - name: 🎨 Check Formatting
-        run: pnpm run --if-present format:check
+        run: npm run --if-present format:check
 
       - name: 🧹 Lint
-        run: pnpm run --if-present lint
+        run: npm run --if-present lint
 
       - name: 🔨 Build
-        run: pnpm run --if-present build
+        run: npm run --if-present build
 
   build-flutter:
     name: 🦋 Analyze & Build (${{ matrix.sample }})

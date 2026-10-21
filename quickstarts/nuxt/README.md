@@ -7,7 +7,6 @@ A minimal Nuxt 3 application demonstrating ThunderID authentication with OAuth 2
 ## Prerequisites
 
 - Node.js 18+
-- pnpm
 - A ThunderID application
 
 ## Getting started
@@ -29,10 +28,11 @@ A minimal Nuxt 3 application demonstrating ThunderID authentication with OAuth 2
    THUNDERID_SESSION_SECRET=<run: openssl rand -base64 32>
    ```
 
-3. Start the development server:
+3. Install dependencies and start the development server:
 
    ```bash
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
    The app is now running at [http://localhost:3000](http://localhost:3000).

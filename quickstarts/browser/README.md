@@ -25,8 +25,8 @@ A minimal Vite + vanilla JS app demonstrating sign-in and sign-out with the Thun
 
 3. Install dependencies and start the dev server:
    ```sh
-   pnpm install
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
