@@ -1,3 +1,5 @@
+![ThunderID Manage Sample](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/b2b-manage.png)
+
 # ThunderID Manage
 
 ThunderID Manage is a sample app for trying out the ThunderID React SDK on B2B management services. An administrator signs in and manages the resources of a ThunderID server from one place. It is a React (Vite + TypeScript) app built with the [ThunderID React SDK](https://www.npmjs.com/package/@thunderid/react).
@@ -27,8 +29,8 @@ The app also uses the SDK hooks `useThunderID`, `useFetchUsers`, `useFetchAuthFl
 
 ## Prerequisites
 
-- Node.js 20+ and [pnpm](https://pnpm.io/)
-- ThunderID React SDK 1.4.0 or later (`@thunderid/react`). It is the first release with the user picker (`BaseUserSelect` and `useFetchUsers`) and the masked `CopyableText` that this sample uses. `pnpm install` fetches it, together with `@thunderid/react-router` 1.3.0.
+- Node.js 20+ and npm
+- ThunderID React SDK 1.4.0 or later (`@thunderid/react`). It is the first release with the user picker (`BaseUserSelect` and `useFetchUsers`) and the masked `CopyableText` that this sample uses. `npm install` fetches it, together with `@thunderid/react-router` 1.3.0.
 - A running ThunderID server (defaults to `https://localhost:8090`) and an administrator account
 - The agent onboarding flow on that server. A standard install already has one, named `default-agent-onboarding-flow`.
 
@@ -56,8 +58,8 @@ New to ThunderID with React? Follow the [React quickstart guide](https://thunder
 4. Install and start:
 
    ```bash
-   pnpm install
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
 5. Open `http://localhost:5173` and sign in as an administrator.

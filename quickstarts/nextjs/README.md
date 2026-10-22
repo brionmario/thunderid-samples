@@ -1,13 +1,12 @@
-# ThunderID Next.js Quickstart
+![ThunderID Next.js Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-nextjs.png)
 
-<a href="https://stackblitz.com/fork/github/thunder-id/samples/tree/main/quickstarts/nextjs?file=.env" target="_blank"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" /></a>
+# ThunderID Next.js Quickstart
 
 A minimal Next.js 15 App Router application demonstrating ThunderID authentication with OAuth 2.0, PKCE, and JWT out of the box.
 
 ## Prerequisites
 
 - Node.js 18+
-- pnpm
 - A ThunderID application
 
 ## Getting started
@@ -35,10 +34,11 @@ A minimal Next.js 15 App Router application demonstrating ThunderID authenticati
    configuration) has a Flow Secret and no client secret; a redirect-based `authorization_code` app has
    a client secret and no Flow Secret.
 
-3. Start the development server:
+3. Install dependencies and start the development server:
 
    ```bash
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
    The app is now running at [http://localhost:3000](http://localhost:3000).

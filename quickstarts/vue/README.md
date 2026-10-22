@@ -1,13 +1,12 @@
-# ThunderID Vue Quickstart
+![ThunderID Vue Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-vue.png)
 
-<a href="https://stackblitz.com/fork/github/thunder-id/samples/tree/main/quickstarts/vue?file=.env" target="_blank"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" /></a>
+# ThunderID Vue Quickstart
 
 A minimal Vue 3 + Vite application demonstrating ThunderID authentication with OAuth 2.0, PKCE, and JWT support using the `@thunderid/vue` SDK.
 
 ## Prerequisites
 
 - Node.js 18+
-- pnpm
 - A ThunderID application
 
 ## Setup
@@ -25,8 +24,8 @@ A minimal Vue 3 + Vite application demonstrating ThunderID authentication with O
 
 3. Install dependencies and start the dev server:
    ```sh
-   pnpm install
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
 The app will be available at `http://localhost:5173`.

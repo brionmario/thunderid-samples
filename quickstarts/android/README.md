@@ -1,3 +1,5 @@
+![ThunderID Android Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-android.png)
+
 # ThunderID Android Quickstart
 
 ThunderID Android Quickstart demonstrates the full authentication lifecycle using the [ThunderID Android SDK](https://github.com/thunder-id/android-sdks) on Android.

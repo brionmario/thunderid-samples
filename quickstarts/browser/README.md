@@ -1,6 +1,6 @@
-# ThunderID Browser Quickstart
+![ThunderID Browser Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-browser.png)
 
-<a href="https://stackblitz.com/fork/github/thunder-id/samples/tree/main/quickstarts/browser?file=.env" target="_blank"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" /></a>
+# ThunderID Browser Quickstart
 
 A minimal Vite + vanilla JS app demonstrating sign-in and sign-out with the ThunderID JavaScript SDK (`@thunderid/browser`).
 
@@ -25,8 +25,8 @@ A minimal Vite + vanilla JS app demonstrating sign-in and sign-out with the Thun
 
 3. Install dependencies and start the dev server:
    ```sh
-   pnpm install
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.

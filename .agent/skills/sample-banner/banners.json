@@ -1,0 +1,139 @@
+{
+  "repo": {
+    "file": "samples.png",
+    "readme": "README.md",
+    "alt": "ThunderID Samples",
+    "title": "ThunderID <accent>Samples</accent>",
+    "accent": "#2DD4BF",
+    "badge": "OFFICIAL SAMPLES",
+    "desc": "Ready-to-run sample apps that show ThunderID features in action, organized by feature area and downloadable with every release."
+  },
+  "samples": [
+    {
+      "path": "quickstarts/android",
+      "alt": "ThunderID Android Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "android",
+      "title": "Android <accent>Quickstart</accent>",
+      "accent": "#3DDC84",
+      "desc": "A Jetpack Compose app that signs users in with the ThunderID Android SDK and shows their profile."
+    },
+    {
+      "path": "quickstarts/browser",
+      "alt": "ThunderID Browser Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "browser",
+      "title": "Browser <accent>Quickstart</accent>",
+      "accent": "#4285F4",
+      "desc": "A framework-free JavaScript app that signs users in with @thunderid/browser."
+    },
+    {
+      "path": "quickstarts/express",
+      "alt": "ThunderID Express Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "express",
+      "title": "Express <accent>Quickstart</accent>",
+      "accent": "#FFFFFF",
+      "desc": "An Express server that signs users in with @thunderid/express and protects its routes."
+    },
+    {
+      "path": "quickstarts/flutter",
+      "alt": "ThunderID Flutter Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "flutter",
+      "title": "Flutter <accent>Quickstart</accent>",
+      "accent": "#54C5F8",
+      "desc": "A Flutter app for iOS and Android that signs users in with the thunderid_flutter package."
+    },
+    {
+      "path": "quickstarts/ios",
+      "alt": "ThunderID iOS Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "ios",
+      "title": "iOS <accent>Quickstart</accent>",
+      "accent": "#F5F5F7",
+      "desc": "A SwiftUI app that signs users in with the ThunderID iOS SDK and shows their profile."
+    },
+    {
+      "path": "quickstarts/nextjs",
+      "alt": "ThunderID Next.js Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "nextjs",
+      "title": "Next.js <accent>Quickstart</accent>",
+      "accent": "#FFFFFF",
+      "desc": "A Next.js App Router app that signs users in with @thunderid/nextjs, on the client and the server."
+    },
+    {
+      "path": "quickstarts/node",
+      "alt": "ThunderID Node.js Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "node",
+      "title": "Node.js <accent>Quickstart</accent>",
+      "accent": "#5FA04E",
+      "desc": "A Node.js service that gets its own access token with @thunderid/node for machine-to-machine calls."
+    },
+    {
+      "path": "quickstarts/nuxt",
+      "alt": "ThunderID Nuxt Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "nuxt",
+      "title": "Nuxt <accent>Quickstart</accent>",
+      "accent": "#00DC82",
+      "desc": "A Nuxt app that signs users in with @thunderid/nuxt, with server-side sessions."
+    },
+    {
+      "path": "quickstarts/react",
+      "alt": "ThunderID React Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "react",
+      "title": "React <accent>Quickstart</accent>",
+      "accent": "#61DAFB",
+      "desc": "A React and Vite app that signs users in with @thunderid/react and shows their profile and tokens."
+    },
+    {
+      "path": "quickstarts/vue",
+      "alt": "ThunderID Vue Quickstart",
+      "badge": "QUICKSTART",
+      "logo": "vue",
+      "title": "Vue <accent>Quickstart</accent>",
+      "accent": "#42B883",
+      "desc": "A Vue and Vite app that signs users in with @thunderid/vue and shows their profile."
+    },
+    {
+      "path": "integrations/better-auth-nextjs",
+      "alt": "ThunderID Better Auth Sample",
+      "badge": "INTEGRATION",
+      "logo": "better-auth",
+      "title": "Better Auth <accent>+ Next.js</accent>",
+      "accent": "#FFFFFF",
+      "desc": "Sign in to a Next.js app through Better Auth's Generic OAuth plugin and the @thunderid/better-auth helper."
+    },
+    {
+      "path": "integrations/flutter-app-auth",
+      "alt": "ThunderID Flutter AppAuth Sample",
+      "badge": "INTEGRATION",
+      "logo": "flutter",
+      "title": "Flutter <accent>AppAuth</accent>",
+      "accent": "#54C5F8",
+      "desc": "Sign in to a Flutter app with the flutter_appauth plugin, using authorization code and PKCE."
+    },
+    {
+      "path": "self-care/account",
+      "alt": "ThunderID Account Sample",
+      "badge": "SELF-CARE SAMPLE",
+      "logo": "react",
+      "title": "Account <accent>App</accent>",
+      "accent": "#2DD4BF",
+      "desc": "A React app where users view and edit their own profile and change their password."
+    },
+    {
+      "path": "b2b/manage",
+      "alt": "ThunderID Manage Sample",
+      "badge": "B2B SAMPLE",
+      "logo": "react",
+      "title": "Manage <accent>App</accent>",
+      "accent": "#2DD4BF",
+      "desc": "A React app where an administrator manages ThunderID resources, starting with agent onboarding."
+    }
+  ]
+}

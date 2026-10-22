@@ -1,13 +1,12 @@
-# ThunderID Nuxt Quickstart
+![ThunderID Nuxt Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-nuxt.png)
 
-<a href="https://stackblitz.com/fork/github/thunder-id/samples/tree/main/quickstarts/nuxt?file=.env" target="_blank"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" /></a>
+# ThunderID Nuxt Quickstart
 
 A minimal Nuxt 3 application demonstrating ThunderID authentication with OAuth 2.0, PKCE, and JWT out of the box.
 
 ## Prerequisites
 
 - Node.js 18+
-- pnpm
 - A ThunderID application
 
 ## Getting started
@@ -29,10 +28,11 @@ A minimal Nuxt 3 application demonstrating ThunderID authentication with OAuth 2
    THUNDERID_SESSION_SECRET=<run: openssl rand -base64 32>
    ```
 
-3. Start the development server:
+3. Install dependencies and start the development server:
 
    ```bash
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
    The app is now running at [http://localhost:3000](http://localhost:3000).

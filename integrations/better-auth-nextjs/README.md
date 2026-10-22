@@ -1,3 +1,5 @@
+![ThunderID Better Auth Sample](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/integrations-better-auth-nextjs.png)
+
 # Better Auth + ThunderID Sample
 
 <a href="https://stackblitz.com/fork/github/thunder-id/samples/tree/main/integrations/better-auth-nextjs?file=.env" target="_blank"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" /></a>
@@ -14,7 +16,6 @@ app.
 ## Prerequisites
 
 - Node.js 18+
-- pnpm
 - A ThunderID application with an OAuth 2.0 / OIDC (`authorization_code`) client
 
 ## Getting started
@@ -48,8 +49,8 @@ app.
 4. Install dependencies and start the development server:
 
    ```bash
-   pnpm install
-   pnpm dev
+   npm install
+   npm run dev
    ```
 
    The app is now running at [http://localhost:3000](http://localhost:3000). Click **Sign in with

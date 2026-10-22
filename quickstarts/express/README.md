@@ -1,6 +1,6 @@
-# ThunderID Express Quickstart
+![ThunderID Express Quickstart](https://raw.githubusercontent.com/thunder-id/samples/main/.github/assets/banners/quickstarts-express.png)
 
-<a href="https://stackblitz.com/fork/github/thunder-id/samples/tree/main/quickstarts/express?file=.env" target="_blank"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt="Open in StackBlitz" /></a>
+# ThunderID Express Quickstart
 
 A minimal Express.js **API** protected by ThunderID access tokens, using the ThunderID JavaScript
 SDK (`@thunderid/express`). Unlike the browser-focused quickstarts, this sample doesn't have a
@@ -34,8 +34,8 @@ Protected routes validate the `Authorization: Bearer <token>` header against Thu
 
 3. Install dependencies and start the server:
    ```sh
-   pnpm install
-   pnpm start
+   npm install
+   npm start
    ```
 
 Open [http://localhost:3000](http://localhost:3000) for the API documentation page.
