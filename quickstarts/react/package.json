@@ -20,6 +20,9 @@
     "@vitejs/plugin-react": "^4.5.2",
     "vite": "^6.3.5"
   },
+  "overrides": {
+    "dompurify": "3.4.17"
+  },
   "allowScripts": {
     "esbuild": true,
     "core-js": false
