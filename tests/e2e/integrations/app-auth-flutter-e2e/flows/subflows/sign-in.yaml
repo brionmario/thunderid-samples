@@ -1,0 +1,22 @@
+appId: com.example.flutterAppauthSample
+---
+# Signs in with E2E_USERNAME and E2E_PASSWORD on the ThunderID Gate, which flutter_appauth opens in
+# the system browser, and waits until the app is back with a session.
+- tapOn: 'Sign in'
+- runFlow: continue-system-prompt.yaml
+
+# The Gate renders its sign-in form from the application's flow, in a web view.
+- extendedWaitUntil:
+    visible: '.*[Uu]sername.*'
+    timeout: 60000
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn: '.*[Uu]sername.*'
+- inputText: ${E2E_USERNAME}
+- tapOn: '.*[Pp]assword.*'
+- inputText: ${E2E_PASSWORD}
+- tapOn: 'Sign [Ii]n'
+
+- extendedWaitUntil:
+    visible: 'Signed in as.*'
+    timeout: 30000
